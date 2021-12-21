@@ -10,6 +10,14 @@
       "StackName": "amplify-dsdemo-dev-204657",
       "StackId": "arn:aws:cloudformation:us-west-2:055345086115:stack/amplify-dsdemo-dev-204657/090b9060-6219-11ec-b3fe-02533c54817f",
       "AmplifyAppId": "d7sy4f5wbi7sx"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d7sy4f5wbi7sx",
+          "type": "manual"
+        }
+      }
     }
   }
 }
