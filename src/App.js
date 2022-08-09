@@ -5,7 +5,6 @@ import { Amplify, API, DataStore, Predicates } from "aws-amplify";
 import { Todo } from "./models";
 import * as queries from "./graphql/queries";
 
-//Use next two lines only if syncing with the cloud
 import awsconfig from "./aws-exports";
 Amplify.configure(awsconfig);
 
@@ -14,23 +13,26 @@ Amplify.configure(awsconfig);
 function App() {
   const [todos, setTodos] = useState([]);
 
-  function onCreate() {
-    DataStore.save(
+  async function createTodo() {
+    await DataStore.save(
       new Todo({
         name: `name ${Date.now()}`,
       })
     );
   }
 
-  function onDeleteAll() {
-    DataStore.delete(Todo, Predicates.ALL);
+  async function deleteTodo() {
+    const [todo] = await DataStore.query(Todo);
+    console.log(todo);
+    if (!todo) return;
+    // const result = await DataStore.delete(Todo, todo.id);
+    const result = await DataStore.delete(Todo, 123);
+    console.log(result);
   }
 
-  // async function onQuery() {
-  //   const todos = await DataStore.query(Todo, Predicates.ALL);
-
-  //   console.log(todos);
-  // }
+  async function onDeleteAll() {
+    await DataStore.delete(Todo, Predicates.ALL);
+  }
 
   async function getTodos() {
     const _todos = await DataStore.query(Todo);
@@ -72,7 +74,8 @@ function App() {
       <header className="App-header">
         <div>
           <button onClick={getTodos}>Query</button>
-          <input type="button" value="NEW" onClick={onCreate} />
+          <input type="button" value="NEW" onClick={createTodo} />
+          <input type="button" value="DELETE" onClick={deleteTodo} />
           <input type="button" value="UPDATE" onClick={updateTodo} />
           <input type="button" value="DELETE ALL" onClick={onDeleteAll} />
           <button onClick={() => DataStore.start()}>Start</button>
