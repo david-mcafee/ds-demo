@@ -25,8 +25,7 @@ function App() {
     const [todo] = await DataStore.query(Todo);
     console.log(todo);
     if (!todo) return;
-    // const result = await DataStore.delete(Todo, todo.id);
-    const result = await DataStore.delete(Todo, 123);
+    const result = await DataStore.delete(Todo, todo.id);
     console.log(result);
   }
 
