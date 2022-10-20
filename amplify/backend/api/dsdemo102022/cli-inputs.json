@@ -1,14 +1,11 @@
 {
   "version": 1,
   "serviceConfiguration": {
-    "apiName": "dsdemo",
+    "apiName": "dsdemo102022",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/Volumes/workplace/ds-demo/amplify/backend/api/dsdemo/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "expirationTime": 365,
-      "apiKeyExpirationDate": "2022-12-21T05:26:06.470Z",
-      "keyDescription": ""
+      "expirationTime": 7
     },
     "conflictResolution": {
       "defaultResolutionStrategy": {
