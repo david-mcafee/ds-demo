@@ -14,6 +14,12 @@
     "categories": {
       "api": {
         "dsdemo102022": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d2xd5taxeonmmh",
+          "type": "manual"
+        }
       }
     }
   }
