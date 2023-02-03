@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-import Amplify, { DataStore, Predicates } from "aws-amplify";
+import { Amplify, DataStore, Predicates } from "aws-amplify";
 import { Todo } from "./models";
 
 import awsconfig from "./aws-exports";
+import DataStoreOperations from "./Components/DataStoreOperations";
 Amplify.configure(awsconfig);
 
-Amplify.Logger.LOG_LEVEL = "DEBUG";
+// Amplify.Logger.LOG_LEVEL = "DEBUG";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -20,7 +21,7 @@ function App() {
     );
   }
 
-  function onDeleteAll() {
+  function deleteAll() {
     DataStore.delete(Todo, Predicates.ALL);
   }
 
@@ -34,6 +35,7 @@ function App() {
   useEffect(() => {
     const subscription = DataStore.observe(Todo).subscribe(() => {
       getTodos();
+      DataStore.start();
     });
 
     return () => subscription.unsubscribe();
@@ -43,12 +45,10 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div>
+          <h1>Basic Amplify DataStore Demo</h1>
+          <DataStoreOperations deleteAll={deleteAll} />
           <button onClick={getTodos}>Query</button>
           <input type="button" value="NEW" onClick={onCreate} />
-          <input type="button" value="DELETE ALL" onClick={onDeleteAll} />
-          <button onClick={() => DataStore.start()}>Start</button>
-          <button onClick={() => DataStore.stop()}>Stop</button>
-          <button onClick={() => DataStore.clear()}>Clear</button>
           <pre>todos: {JSON.stringify(todos, null, 2)}</pre>
         </div>
       </header>
