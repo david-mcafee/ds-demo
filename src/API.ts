@@ -81,6 +81,45 @@ export type DeleteTodoInput = {
   _version?: number | null,
 };
 
+export type CreateTodo2Input = {
+  id?: string | null,
+  name?: Array< string | null > | null,
+  description?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type ModelTodo2ConditionInput = {
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelTodo2ConditionInput | null > | null,
+  or?: Array< ModelTodo2ConditionInput | null > | null,
+  not?: ModelTodo2ConditionInput | null,
+};
+
+export type Todo2 = {
+  __typename: "Todo2",
+  id: string,
+  name?: Array< string | null > | null,
+  description?: Array< string | null > | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateTodo2Input = {
+  id: string,
+  name?: Array< string | null > | null,
+  description?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type DeleteTodo2Input = {
+  id: string,
+  _version?: number | null,
+};
+
 export type ModelTodoFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -109,6 +148,22 @@ export type ModelIDInput = {
 export type ModelTodoConnection = {
   __typename: "ModelTodoConnection",
   items:  Array<Todo | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelTodo2FilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  description?: ModelStringInput | null,
+  and?: Array< ModelTodo2FilterInput | null > | null,
+  or?: Array< ModelTodo2FilterInput | null > | null,
+  not?: ModelTodo2FilterInput | null,
+};
+
+export type ModelTodo2Connection = {
+  __typename: "ModelTodo2Connection",
+  items:  Array<Todo2 | null >,
   nextToken?: string | null,
   startedAt?: number | null,
 };
@@ -149,6 +204,14 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionTodo2FilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  description?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionTodo2FilterInput | null > | null,
+  or?: Array< ModelSubscriptionTodo2FilterInput | null > | null,
 };
 
 export type CreateTodoMutationVariables = {
@@ -200,6 +263,63 @@ export type DeleteTodoMutation = {
     id: string,
     name: string,
     description?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateTodo2MutationVariables = {
+  input: CreateTodo2Input,
+  condition?: ModelTodo2ConditionInput | null,
+};
+
+export type CreateTodo2Mutation = {
+  createTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateTodo2MutationVariables = {
+  input: UpdateTodo2Input,
+  condition?: ModelTodo2ConditionInput | null,
+};
+
+export type UpdateTodo2Mutation = {
+  updateTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteTodo2MutationVariables = {
+  input: DeleteTodo2Input,
+  condition?: ModelTodo2ConditionInput | null,
+};
+
+export type DeleteTodo2Mutation = {
+  deleteTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -277,6 +397,75 @@ export type SyncTodosQuery = {
   } | null,
 };
 
+export type GetTodo2QueryVariables = {
+  id: string,
+};
+
+export type GetTodo2Query = {
+  getTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListTodo2sQueryVariables = {
+  filter?: ModelTodo2FilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListTodo2sQuery = {
+  listTodo2s?:  {
+    __typename: "ModelTodo2Connection",
+    items:  Array< {
+      __typename: "Todo2",
+      id: string,
+      name?: Array< string | null > | null,
+      description?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncTodo2sQueryVariables = {
+  filter?: ModelTodo2FilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncTodo2sQuery = {
+  syncTodo2s?:  {
+    __typename: "ModelTodo2Connection",
+    items:  Array< {
+      __typename: "Todo2",
+      id: string,
+      name?: Array< string | null > | null,
+      description?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type OnCreateTodoSubscriptionVariables = {
   filter?: ModelSubscriptionTodoFilterInput | null,
 };
@@ -323,6 +512,60 @@ export type OnDeleteTodoSubscription = {
     id: string,
     name: string,
     description?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateTodo2SubscriptionVariables = {
+  filter?: ModelSubscriptionTodo2FilterInput | null,
+};
+
+export type OnCreateTodo2Subscription = {
+  onCreateTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateTodo2SubscriptionVariables = {
+  filter?: ModelSubscriptionTodo2FilterInput | null,
+};
+
+export type OnUpdateTodo2Subscription = {
+  onUpdateTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteTodo2SubscriptionVariables = {
+  filter?: ModelSubscriptionTodo2FilterInput | null,
+};
+
+export type OnDeleteTodo2Subscription = {
+  onDeleteTodo2?:  {
+    __typename: "Todo2",
+    id: string,
+    name?: Array< string | null > | null,
+    description?: Array< string | null > | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
