@@ -65,7 +65,7 @@ function DataStoreOperations({ deleteAll }) {
       >
         {`User has a network connection: ${networkStatus}`}
       </p>
-      <p>DS</p>
+      <p>DataStore Operations:</p>
       <div className="buttons">
         <button
           onClick={async () => {

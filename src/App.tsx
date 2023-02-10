@@ -85,6 +85,8 @@ function App() {
         <div>
           <h1>Basic Amplify DataStore Demo</h1>
           <DataStoreOperations deleteAll={deleteAll} />
+          <hr />
+          <h2>Todo operations:</h2>
           <button onClick={getTodos}>Query</button>
           <button onClick={onCreate}>NEW</button>
           <button onClick={updateLastTodo}>UPDATE</button>
