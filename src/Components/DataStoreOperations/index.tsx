@@ -50,7 +50,7 @@ function DataStoreOperations({ deleteAll }) {
           margin: 0,
         }}
       >
-        DataStore Ready: {ready ? "Yes" : "No"}
+        DataStore Ready: {ready ? "yes" : "no"}
         {networkStatus}
       </p>
       <p
