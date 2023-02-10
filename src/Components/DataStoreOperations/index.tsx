@@ -38,7 +38,7 @@ function DataStoreOperations({ deleteAll }) {
   };
 
   return (
-    <div>
+    <div style={{ border: "1px dotted white", padding: "25px" }}>
       <p
         data-test="datastore-ready"
         style={{
