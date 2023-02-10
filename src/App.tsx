@@ -14,35 +14,6 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [snapshots, setSnapshots] = useState([]);
 
-  async function onCreate() {
-    await DataStore.save(
-      new Todo({
-        name: `name ${Date.now()}`,
-        description: `description ${Date.now()}`,
-      })
-    );
-  }
-
-  async function updateLastTodo() {
-    const [_todo] = await DataStore.query(Todo);
-    await DataStore.save(
-      Todo.copyOf(_todo, (updated) => {
-        updated.description = "updated";
-      })
-    );
-  }
-
-  function deleteAll() {
-    DataStore.delete(Todo, Predicates.ALL);
-  }
-
-  async function getTodos() {
-    const _todos = await DataStore.query(Todo);
-    //@ts-ignore
-    setTodos(_todos);
-    console.log("Todos", _todos);
-  }
-
   useEffect(() => {
     const subscription = DataStore.observe(Todo).subscribe(() => {
       getTodos();
@@ -74,6 +45,40 @@ function App() {
     };
   }, []);
 
+  async function onCreate() {
+    await DataStore.save(
+      new Todo({
+        name: `name ${Date.now()}`,
+        description: `description ${Date.now()}`,
+      })
+    );
+  }
+
+  async function updateLastTodo() {
+    const [_todo] = await DataStore.query(Todo);
+    await DataStore.save(
+      Todo.copyOf(_todo, (updated) => {
+        updated.description = "updated";
+      })
+    );
+  }
+
+  function deleteAll() {
+    DataStore.delete(Todo, Predicates.ALL);
+  }
+
+  async function getTodos() {
+    const _todos = await DataStore.query(Todo);
+    //@ts-ignore
+    setTodos(_todos);
+    console.log("Todos", _todos);
+  }
+
+  function clearLocalState() {
+    setTodos([]);
+    setSnapshots([]);
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -81,9 +86,11 @@ function App() {
           <h1>Basic Amplify DataStore Demo</h1>
           <DataStoreOperations deleteAll={deleteAll} />
           <button onClick={getTodos}>Query</button>
-          <input type="button" value="NEW" onClick={onCreate} />
-          <input type="button" value="UPDATE" onClick={updateLastTodo} />
+          <button onClick={onCreate}>NEW</button>
+          <button onClick={updateLastTodo}>UPDATE</button>
+          <button onClick={clearLocalState}>Clear Local State</button>
           <pre>todos: {JSON.stringify(todos, null, 2)}</pre>
+          <h3>Only returns snapshots for matching updates:</h3>
           <pre>observeQuery: {JSON.stringify(snapshots, null, 2)}</pre>
         </div>
       </header>
