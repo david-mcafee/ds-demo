@@ -133,7 +133,7 @@ function Todo22() {
         <div>
           <h1>Repro: 10955</h1>
           <p>
-            When a sschema contains a field with a list, and that field is set to
+            When a schema contains a field with a list, and that field is set to
             `null`, observeQuery will only emit a snapshot when the first "or"
             condition is met - the second "or" condition will be ignored
           </p>
