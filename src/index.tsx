@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import Todo2 from "./Todo2";
+// import Todo2 from "./Todo2";
+import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -9,7 +10,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Todo2 />
+    {/* <Todo2 /> */}
+    <App />
   </React.StrictMode>
 );
 

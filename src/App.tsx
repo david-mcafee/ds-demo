@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 import { Amplify, DataStore, Predicates, SortDirection } from "aws-amplify";
+// import { initSchema } from "@aws-amplify/datastore";
+// import { schema } from "./models/schema";
 import { Todo } from "./models";
 
 import awsconfig from "./aws-exports";
@@ -12,38 +14,38 @@ Amplify.configure(awsconfig);
 
 function App() {
   const [todos, setTodos] = useState([]);
-  const [snapshots, setSnapshots] = useState([]);
+  // const [snapshots, setSnapshots] = useState([]);
 
-  useEffect(() => {
-    const subscription = DataStore.observe(Todo).subscribe(() => {
-      getTodos();
-      DataStore.start();
-    });
+  // useEffect(() => {
+  //   const subscription = DataStore.observe(Todo).subscribe(() => {
+  //     getTodos();
+  //     DataStore.start();
+  //   });
 
-    return () => subscription.unsubscribe();
-  }, []);
+  //   return () => subscription.unsubscribe();
+  // }, []);
 
-  useEffect(() => {
-    const subscription = DataStore.observeQuery(
-      Todo,
-      (q) =>
-        q.or((q) => [
-          q.name.contains("should not match this"),
-          q.description.contains("updated"),
-        ]),
-      {
-        sort: (q) => q.createdAt(SortDirection.DESCENDING),
-      }
-    ).subscribe((snapshot) => {
-      const { items } = snapshot;
-      console.log("snapshot", snapshot);
-      //@ts-ignore
-      setSnapshots((prev) => [...prev, ...items]);
-    });
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const subscription = DataStore.observeQuery(
+  //     Todo,
+  //     (q) =>
+  //       q.or((q) => [
+  //         q.name.contains("should not match this"),
+  //         q.description.contains("updated"),
+  //       ]),
+  //     {
+  //       sort: (q) => q.createdAt(SortDirection.DESCENDING),
+  //     }
+  //   ).subscribe((snapshot) => {
+  //     const { items } = snapshot;
+  //     console.log("snapshot", snapshot);
+  //     //@ts-ignore
+  //     setSnapshots((prev) => [...prev, ...items]);
+  //   });
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
 
   async function onCreate() {
     await DataStore.save(
@@ -74,9 +76,21 @@ function App() {
     console.log("Todos", _todos);
   }
 
+  // async function initSchemaTest() {
+  //   const models = initSchema(schema);
+  //   const selectedModel = Object.keys(models)[0];
+  //   const test = models[selectedModel];
+  //   await DataStore.clear();
+  //   await DataStore.start();
+  //   //@ts-ignore
+  //   DataStore.observeQuery(test).subscribe((snapshot) => {
+  //     console.log("snapshot", snapshot);
+  //   });
+  // }
+
   function clearLocalState() {
     setTodos([]);
-    setSnapshots([]);
+    // setSnapshots([]);
   }
 
   return (
@@ -91,9 +105,10 @@ function App() {
           <button onClick={onCreate}>NEW</button>
           <button onClick={updateLastTodo}>UPDATE</button>
           <button onClick={clearLocalState}>Clear Local State</button>
+          {/* <button onClick={initSchemaTest}>Init schema</button> */}
           <pre>todos: {JSON.stringify(todos, null, 2)}</pre>
-          <h3>Only returns snapshots for matching updates:</h3>
-          <pre>observeQuery: {JSON.stringify(snapshots, null, 2)}</pre>
+          {/* <h3>Only returns snapshots for matching updates:</h3> */}
+          {/* <pre>observeQuery: {JSON.stringify(snapshots, null, 2)}</pre> */}
         </div>
       </header>
     </div>
