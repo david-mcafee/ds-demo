@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import { Amplify, DataStore, Predicates, SortDirection } from "aws-amplify";
@@ -15,15 +15,22 @@ Amplify.configure(awsconfig);
 function App() {
   const [todos, setTodos] = useState([]);
   // const [snapshots, setSnapshots] = useState([]);
+  const [counter, setCounter] = useState(0);
 
-  // useEffect(() => {
-  //   const subscription = DataStore.observe(Todo).subscribe(() => {
-  //     getTodos();
-  //     DataStore.start();
-  //   });
+  useEffect(() => {
+    const subscription = DataStore.observe(Todo).subscribe((msg) => {
+      console.log(msg);
+      const { opType, element } = msg;
+      //@ts-ignore
+      console.log("Version:", element._version);
+      if (opType === "UPDATE") {
+        //@ts-ignore
+        setTodos([element]);
+      }
+    });
 
-  //   return () => subscription.unsubscribe();
-  // }, []);
+    return () => subscription.unsubscribe();
+  }, []);
 
   // useEffect(() => {
   //   const subscription = DataStore.observeQuery(
@@ -48,7 +55,7 @@ function App() {
   // }, []);
 
   async function onCreate() {
-    await DataStore.save(
+    return await DataStore.save(
       new Todo({
         name: `name ${Date.now()}`,
         description: `description ${Date.now()}`,
@@ -58,11 +65,31 @@ function App() {
 
   async function updateLastTodo() {
     const [_todo] = await DataStore.query(Todo);
+    setCounter((prev) => prev + 1);
     await DataStore.save(
       Todo.copyOf(_todo, (updated) => {
-        updated.description = "updated";
+        updated.description = `updated ${counter}`;
       })
     );
+  }
+
+  async function updateManyTimes() {
+    const original = await onCreate();
+
+    for (let i = 0; i < 100; i++) {
+      const retrieved = await DataStore.query(Todo, original.id);
+
+      await DataStore.save(
+        //@ts-ignore
+        Todo.copyOf(retrieved, (updated) => {
+          updated.description = `updated ${i}`;
+        })
+      );
+    }
+
+    const final = await DataStore.query(Todo, original.id);
+    //@ts-ignore
+    setTodos([final]);
   }
 
   function deleteAll() {
@@ -103,6 +130,9 @@ function App() {
           <h2>Todo operations:</h2>
           <button onClick={getTodos}>Query</button>
           <button onClick={onCreate}>NEW</button>
+          <button onClick={updateManyTimes}>
+            Update one record many times
+          </button>
           <button onClick={updateLastTodo}>UPDATE</button>
           <button onClick={clearLocalState}>Clear Local State</button>
           {/* <button onClick={initSchemaTest}>Init schema</button> */}
