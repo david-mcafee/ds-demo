@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-import { Amplify, DataStore, Predicates, SortDirection } from "aws-amplify";
+import { Amplify, DataStore, Predicates } from "aws-amplify";
 // import { initSchema } from "@aws-amplify/datastore";
 // import { schema } from "./models/schema";
 import { Todo } from "./models";
@@ -16,17 +16,13 @@ function App() {
   const [todos, setTodos] = useState([]);
   // const [snapshots, setSnapshots] = useState([]);
   const [counter, setCounter] = useState(0);
+  const [currentTodo, setCurrentTodo] = useState();
 
   useEffect(() => {
     const subscription = DataStore.observe(Todo).subscribe((msg) => {
-      console.log(msg);
       const { opType, element } = msg;
       //@ts-ignore
-      console.log("Version:", element._version);
-      if (opType === "UPDATE") {
-        //@ts-ignore
-        setTodos([element]);
-      }
+      console.log("SUB DESCRIPTION:", [element.description, element._version]);
     });
 
     return () => subscription.unsubscribe();
@@ -55,12 +51,14 @@ function App() {
   // }, []);
 
   async function onCreate() {
-    return await DataStore.save(
+    const result = await DataStore.save(
       new Todo({
         name: `name ${Date.now()}`,
         description: `description ${Date.now()}`,
       })
     );
+    //@ts-ignore
+    setCurrentTodo(result);
   }
 
   async function updateLastTodo() {
@@ -73,11 +71,41 @@ function App() {
     );
   }
 
-  async function updateManyTimes() {
-    const original = await onCreate();
+  function pause(ms: number) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("");
+      }, ms);
+    });
+  }
 
-    for (let i = 0; i < 100; i++) {
-      const retrieved = await DataStore.query(Todo, original.id);
+  async function updateManyTimes() {
+    for (let i = 0; i < 3; i++) {
+      // Pause on slow network:
+      /**
+       * pause(200) - results in title being 0
+       * middle ranges - differing version results, all with failures (but different )
+       * pause(500) - succeeds
+       */
+      await pause(100);
+      console.log(`UPDATE-------------------- ${i}`);
+      console.log(`UPDATE-------------------- ${i}`);
+      /**
+       * Version here will be `undefined` each time, as will the
+       * responses from `observe`, and will result in breaking behavior.
+       * `const [retrieved] = await DataStore.query(Todo);`, however,
+       * will retrieve a version, as will `observe`, and it will
+       * always update as expected.
+       */
+      if (!currentTodo) return;
+      // @ts-ignore
+      const retrieved = await DataStore.query(Todo, currentTodo.id);
+
+      console.log("RETRIEVED DESC / VERSION:", [
+        retrieved?.description,
+        //@ts-ignore
+        retrieved?._version,
+      ]);
 
       await DataStore.save(
         //@ts-ignore
@@ -87,13 +115,25 @@ function App() {
       );
     }
 
-    const final = await DataStore.query(Todo, original.id);
+    // @ts-ignore
+    // const final = await DataStore.query(Todo, original.id);
     //@ts-ignore
-    setTodos([final]);
+    // setTodos([final]);
   }
 
   function deleteAll() {
     DataStore.delete(Todo, Predicates.ALL);
+  }
+
+  async function getCurrentTodo() {
+    //@ts-ignore
+    const _todo = await DataStore.query(Todo, currentTodo.id);
+    console.log(_todo);
+    // @ts-ignore
+    console.log("get current todo version", _todo._version);
+    //@ts-ignore
+    setCurrentTodo(_todo);
+    return _todo;
   }
 
   async function getTodos() {
@@ -128,10 +168,13 @@ function App() {
           <DataStoreOperations deleteAll={deleteAll} />
           <hr />
           <h2>Todo operations:</h2>
-          <button onClick={getTodos}>Query</button>
-          <button onClick={onCreate}>NEW</button>
+          <h3>Current Todo Version:</h3>
+          <p>{JSON.stringify(currentTodo, null, 2)}</p>
+          <button onClick={getTodos}>Query all</button>
+          <button onClick={onCreate}>1 NEW</button>
+          <button onClick={getCurrentTodo}>2 Get current Todo</button>
           <button onClick={updateManyTimes}>
-            Update one record many times
+            3 Update one record many times
           </button>
           <button onClick={updateLastTodo}>UPDATE</button>
           <button onClick={clearLocalState}>Clear Local State</button>
